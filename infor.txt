@@ -1,0 +1,31 @@
+simple  简单模式 先允行receive.go,再运行send.go
+queue 工作队列 先运行worker.go,再运行new_task.go
+pubsub 分布订阅模式，先运行 receive_logs.go,再运行emit_log.go,
+            go run receive_logs.go > logs_from_rabbit.log // 把日志存储到日志文件
+   订阅模式，先运行几个receive，然后再运行emit,emit分布的消息就会到所有的receive上面
+
+
+
+roule 路由
+将"warning"和"error"级别的消息都写入磁盘，只需运行：
+go run receive_logs_direct.go warning error>logs_from_rabbit.log
+将所有消息都打印到屏幕：
+go run receive_logs_direct.go warning error info
+发送消息：
+go run emit_log_direct.go error "this is a log message"
+
+topic 主题交换器
+接收所有消息：
+go run receive_logs_topic.go "#"
+接收来自"kern"设备的消息：
+go run receive_logs_topic.go "kern.*"
+接收所有以"critical"结尾的消息：
+go run receive_logs_topic.go "*.critical"
+创建多重绑定：
+go run receive_logs_topic.go "kern.*" "*.critical"
+发送消息：
+go run emit_log_topic.go "kern.critical" "A critical kernal error"
+
+rpc 远过程调用(RPC) 回调队列（Callback queue）
+go run rpc_server.go
+go run rpc_client.go 30
